@@ -1,5 +1,6 @@
 // ignore_for_file: use_super_parameters
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class NoticeBoard extends StatelessWidget {
@@ -12,29 +13,33 @@ class NoticeBoard extends StatelessWidget {
         title: const Text('College Notice Board'),
         backgroundColor: Colors.lightBlue,
       ),
-      body: ListView(
-        children: const [
-          NoticeItem(
-            title: 'DIPLOMA NOV2023 RESULT PUBLISHED...!',
-            date: 'March 1 ',
-            description:
-                '> Result available in student login.               '
-               
-                '  > Those who need revaluation/answer script copy, apply upto 11/03/2023',
-          ),
-          
-          
-          NoticeItem(
-            title: 'Tech Fest - ',
-            date: 'feb 10 - feb 26',
-            description:
-                'Explore the latest technology trends and innovations!',
-          ),
-        ],
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('notices').snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+          final notices = snapshot.data!.docs;
+          return ListView.builder(
+            itemCount: notices.length,
+            itemBuilder: (context, index) {
+              final notice = notices[index];
+              return NoticeItem(
+                title: notice['title'],
+                date: notice['date'],
+                description: notice['description'],
+              );
+            },
+          );
+        },
       ),
     );
   }
 }
+
 
 class NoticeItem extends StatelessWidget {
   final String title;

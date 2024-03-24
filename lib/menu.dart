@@ -1,11 +1,16 @@
+import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:signin/About.dart';
+import 'package:signin/Canteen.dart';
 import 'package:signin/E_books.dart';
 import 'package:signin/Library_books.dart';
 import 'package:signin/Notice_board_screen.dart';
 import 'package:signin/Online_courses.dart';
-import 'package:signin/canteen.dart';
-import 'package:flutter/material.dart';
-//import 'package:share/share.dart';
+import 'package:signin/profile.dart';
+import 'package:signin/screens/signin_screen.dart';
 
 class menuscreen extends StatelessWidget {
   List<String> buttonnames = [
@@ -49,12 +54,16 @@ class menuscreen extends StatelessWidget {
         child: ListView(
           children: [
             UserAccountsDrawerHeader(
-              accountName: Text('    abc'),
-              accountEmail: Text('abc@gmail.com'),
+              accountName: Text(
+                  FirebaseAuth.instance.currentUser?.displayName ??
+                      'User Name'),
+              accountEmail: Text(FirebaseAuth.instance.currentUser?.email ??
+                  'user@example.com'),
               currentAccountPicture: InkWell(
                 onTap: () {},
                 child: CircleAvatar(
-                  backgroundImage: AssetImage('assets/icon.png'),
+                  backgroundImage: NetworkImage(
+                      FirebaseAuth.instance.currentUser?.photoURL ?? ''),
                   backgroundColor: Color.fromARGB(255, 247, 243, 243),
                 ),
               ),
@@ -68,7 +77,12 @@ class menuscreen extends StatelessWidget {
                 " My profile",
                 style: TextStyle(fontSize: 15),
               ),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+  context,
+  MaterialPageRoute(builder: (context) => ProfileSettingsScreen()),
+);
+              },
             ),
             ListTile(
               leading: Icon(Icons.share),
@@ -132,15 +146,14 @@ class menuscreen extends StatelessWidget {
                     } else if (index == 1) {
                       destinationScreen = ebooks();
                     } else if (index == 2) {
-                       destinationScreen = courses();
+                      destinationScreen = courses();
                     } else if (index == 3) {
-                       destinationScreen = Canteen();
+                      destinationScreen = Canteen();
                     } else if (index == 4) {
-                       destinationScreen = Librarybooks();
+                      destinationScreen = Librarybooks();
                     } else if (index == 5) {
                       destinationScreen = About();
-                    }
-                    else {
+                    } else {
                       destinationScreen = Container(); // or any default screen
                     }
                     return InkResponse(
