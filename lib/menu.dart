@@ -9,13 +9,14 @@ import 'package:signin/E_books.dart';
 import 'package:signin/Library_books.dart';
 import 'package:signin/Notice_board_screen.dart';
 import 'package:signin/Online_courses.dart';
+import 'package:signin/attendance/home.dart';
 import 'package:signin/profile.dart';
 import 'package:signin/screens/signin_screen.dart';
 
 class menuscreen extends StatelessWidget {
   List<String> buttonnames = [
     "Notice board",
-    'E-books',
+    'Attendance',
     'Online courses',
     'Canteen',
     'Library books',
@@ -117,7 +118,14 @@ class menuscreen extends StatelessWidget {
                 "Signout",
                 style: TextStyle(fontSize: 15),
               ),
-              onTap: () {},
+              onTap: () {
+                
+                               Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) {
+                            return SignInScreen();
+                          }),
+                        );
+              },
             ),
           ],
         ),
@@ -144,7 +152,7 @@ class menuscreen extends StatelessWidget {
                     if (index == 0) {
                       destinationScreen = NoticeBoard();
                     } else if (index == 1) {
-                      destinationScreen = ebooks();
+                      destinationScreen = MyApp();
                     } else if (index == 2) {
                       destinationScreen = courses();
                     } else if (index == 3) {
